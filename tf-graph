@@ -4,6 +4,8 @@
 op.name : ノードの名前
 op.type : ノードの型
 op.op_def : ノードのProtocol buffer
+
+
 #!/usr/bin/env python
 # coding:utf-8
 from __future__ import division
