@@ -1,1 +1,30 @@
-j
+
+グラフ内のノード情報を取得する。
+
+op.name : ノードの名前
+op.type : ノードの型
+op.op_def : ノードのProtocol buffer
+#!/usr/bin/env python
+# coding:utf-8
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import numpy as np
+import tensorflow as tf
+
+# グラフの取得
+graph = tf.get_default_graph()
+
+# ノード一覧
+x = tf.placeholder(tf.float32, shape=[2,2], name="matrix_x")  # 2x2 Tensor
+y = tf.placeholder(tf.float32, shape=[2,2], name="matrix_y")  # 2x2 Tensor
+matmul = tf.matmul(x, y, name="matrix_mul")  # xとyの乗算
+
+for op in graph.get_operations():
+    # ノードの名前
+    print("***name***", op.name)
+    # ノードの型
+    print("***type***", op.type)
+    # ノードの情報を表すprotocol buffer
+    print("***op_def***", op.op_def)
