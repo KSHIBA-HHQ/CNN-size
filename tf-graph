@@ -30,3 +30,6 @@ for op in graph.get_operations():
     print("***type***", op.type)
     # ノードの情報を表すprotocol buffer
     print("***op_def***", op.op_def)
+
+
+
