@@ -1,0 +1,65 @@
+ドライバ周りのゴミを一掃
+$ dpkg -l | grep nvidia
+$ dpkg -l | grep cuda
+$ sudo apt-get --purge remove nvidia-*
+$ sudo apt-get --purge remove cuda-*
+NVIDIAドライバをインストール
+Ubuntu16.04.3では何故かnvidia-384しかうまく動かないのか？
+
+$ sudo add-apt-repository ppa:graphics-drivers/ppa
+$ sudo apt-get update
+$ apt-cache search 'nvidia-[0-9]+$'
+$ sudo apt install nvidia-384
+$ reboot
+CUDA8.0をインストール
+$ sudo dpkg -i cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.deb
+$ sudo apt-get update
+$ sudo apt-get install cuda-8-0
+cuDNN v7.0.5 for CUDA8.0のインストール
+$ tar xfvz cudnn-8.0-linux-x64-v7.tgz
+$ sudo cp cuda/include/cudnn.h /usr/local/cuda-8.0/include/
+$ sudo cp cuda/lib64/libcudnn* /usr/local/cuda-8.0/lib64/
+$ sudo chmod a+r /usr/local/cuda-8.0/lib64/libcudnn*
+パスの設定
+$ echo 'export PATH="/usr/local/cuda/bin:$PATH"' >> ~/.bashrc
+$ echo 'export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"' >> ~/.bashrc
+$ source ~/.bashrc
+動作確認
+$ cd ~/cudnn_samples_v7/mnistCUDNN/
+$ make clean && make
+$ ./mnistCUDNN
+動きました。ありがとうございますm(__)m
+
+TensorFlow GPUインストール
+いよいよです。こちらのページを参考にしながら進めます。
+Installing TensorFlow on Ubuntu  |  TensorFlow
+
+$ sudo apt-get install libcupti-dev
+[Installing with native pip]で行きたいと思います。(仮想環境とかもうややこしいからヤメて。。。)
+
+$ pip install --upgrade pip
+$ pip install tensorflow-gpu
+しかし、これでは
+
+$ python
+>>import tensorflow as tf
+ImportError: libcublas.so.9.0: cannot open shared object file: No such file or directory
+怒られてしまいました。実は最近tensorflow v1.5がリリースされたのですが、これはCUDA9向けでCUDA8.0を使う場合はtensorflow v1.4を使わないとダメみたいです。
+ImportError: libcublas.so.9.0: cannot open shared object file: No such file or directory · Issue #15604 · tensorflow/tensorflow · GitHub
+ということでv1.4をインストール
+
+$ sudo pip install --upgrade tensorflow-gpu==1.4
+ですが1.4はcuDNNのv6でしか動かないようです。
+
+$ tar xfvz cudnn-8.0-linux-x64-v6.0.tgz
+$ sudo cp cuda/include/cudnn.h /usr/local/cuda-8.0/include/
+$ sudo cp cuda/lib64/libcudnn* /usr/local/cuda-8.0/lib64/
+$ sudo chmod a+r /usr/local/cuda-8.0/lib64/libcudnn*
+をやり直すと動くようになりました。。。しんど。。。
+
+おまけ
+$ sudo apt-get install git
+$ git clone https://github.com/tensorflow/models.git
+$ cd models/tutorials/image/cifar10
+$ python cifar10_train.py 
+動いた！！！！！！！
