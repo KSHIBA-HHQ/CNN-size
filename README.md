@@ -23,3 +23,6 @@ Npam = Csize_previous * Csize_current * (Ksize^2 + 1)
 
                 summary = sess.run(tf.merge_summary([train_accuracy_summary]), {x: batch[0], y_: batch[1], keep_prob: 1.0})
                 summary = sess.run(tf.merge_summary([test_accuracy_summary]), {x: mnist.test.images, 
+
+ロジット（英: logit）とは、0から1の値をとるp に対し
+log(p/(1-p))  ＝　log(p)-log(1-p) で表される値をいう。
