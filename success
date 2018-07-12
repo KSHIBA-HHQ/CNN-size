@@ -19,10 +19,11 @@ dependencies:
 ###  python 3.5
 ###  tensorflow or tensorflow-gpu 1.4
 ###  cuda ver8.0
+###  cudnn 6.0.21
 
 
 
-
+#　参考　cudnnバージョン確認方法
 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\include\cudnn.h"
 
 open cudnn.h
