@@ -15,7 +15,7 @@ dependencies:
         - moviepy
         - tensorflow-gpu==1.4
 
-
+###　tensorflow動作成功時の仕様
 ###  python 3.5
 ###  tensorflow 1.5　or tensorflow-gpu 1.4
 ###  cuda ver8.0
