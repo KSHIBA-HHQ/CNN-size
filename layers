@@ -1,0 +1,105 @@
+
+
+def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
+    print('start layers')
+    #kshiba[8:55]  lesson10 SceneUnderStanding 8.FCN-8-Decoder    
+    """
+    Create the layers for a fully convolutional network.  Build skip-layers using the vgg layers.
+    :param vgg_layer3_out: TF Tensor for VGG Layer 3 output
+    :param vgg_layer4_out: TF Tensor for VGG Layer 4 output
+    :param vgg_layer7_out: TF Tensor for VGG Layer 7 output
+    :param num_classes: Number of classes to classify
+    :return: The Tensor for the last layer of output
+    """
+    
+    # TODO: Implement function
+    """###################
+    #kshiba[11:39]
+    conv_1x1=tf.layers.conv2d(vgg_layer7_out,num_classes,1,padding='same',              
+    kernel_regularsize=tf.contrib.layers.l2_regularizer(1e-3) )
+    #kshiba[13:39]             
+    output=tf.layers.conv2d_transpose(conv1x1,num_classes,4,2,padding='same',
+    kernel_regularsize=tf.contrib.layers.l2_regularizer(1e-3) )                      
+    #kshiba[16:59]  lesson10 SceneUnderStanding 8.FCN-8-Decoder  
+
+    #kshiba[30:54]
+    tf.Print(output,[tf.shape(output[1:3])])
+    return None
+    ###################"""
+    """
+    # 1x1 convolution of vgg layer 7
+    layer7a_out = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, 
+                                   padding= 'same', 
+                                   kernel_initializer= tf.random_normal_initializer(stddev=0.01),
+                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+    
+ # upsample
+    layer4a_inp1 = tf.layers.conv2d_transpose(layer7a_out, num_classes, 4, 
+                                             strides= (2, 2), 
+                                             padding= 'same', 
+                                             kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+                                             kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+    # make sure the shapes are the same!
+    # 1x1 convolution of vgg layer 4
+    layer4a_inp2 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, 
+                                   padding= 'same', 
+                                   kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+    # skip connection (element-wise addition)
+    layer4a_out = tf.add(layer4a_inp1, layer4a_inp2)
+    # upsample
+    layer3a_inp1 = tf.layers.conv2d_transpose(layer4a_out, num_classes, 4,  
+                                             strides= (2, 2), 
+                                             padding= 'same', 
+                                             kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+                                             kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+    # 1x1 convolution of vgg layer 3
+    layer3a_inp2 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, 
+                                   padding= 'same', 
+                                   kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+           
+    # skip connection (element-wise addition)
+    layer3a_out = tf.add(layer3a_inp1, layer3a_inp2)
+    # upsample
+    nn_last_layer = tf.layers.conv2d_transpose(layer3a_out, num_classes, 16,  
+                                               strides= (8, 8), 
+                                               padding= 'same', 
+                                               kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+                                               kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+    """
+    layer7a_out = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, 
+                                   padding= 'same', 
+                                   kernel_initializer= tf.random_normal_initializer(stddev=0.01),
+                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+           
+    layer7a_com = tf.layers.conv2d_transpose(layer7a_out, num_classes, 8, 
+                                   strides= (4, 4), 
+                                   padding= 'same', 
+                                   kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+    
+    layer4a_com = tf.layers.conv2d_transpose(vgg_layer4_out, num_classes, 4,
+                                   strides= (2, 2), 
+                                   padding= 'same', 
+                                   kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+
+               
+    layer3a_com  = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, 
+                                   padding= 'same', 
+                                   kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+   
+    mix_layer_7_4 = tf.add(layer7a_com,layer4a_com)
+
+    mix_layer_7_4_3 = tf.add(mix_layer_7_4,layer3a_com) 
+ 
+    nn_last_layer = tf.layers.conv2d_transpose(mix_layer_7_4_3, num_classes, 16,  
+            strides= (8, 8), 
+            padding= 'same', 
+            kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
+            kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
+  
+    return nn_last_layer
+tests.test_layers(layers)
