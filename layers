@@ -1,3 +1,10 @@
+おそらくストライドにのみ依存
+>>　layer7 ÷ ストライド(4)=　4096÷ 2÷ 2÷ 2÷ 2=256
+>>　layer4 ÷ ストライド(2)=　512÷ 2=256
+>>　layer3 ÷ ストライド(0)=　256÷ 1=256
+>>　layer7+layer4+layer3 ÷ストライド(8)=　256÷ 2÷ 2÷ 2÷ 2÷ 2÷ 2÷ 2÷ 2=1 (元画像圧縮率1.0)
+
+
 
 
 def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
